@@ -69,7 +69,7 @@ output "private_subnetwork_secondary_range_name" {
 
 output "public" {
   description = "The network tag string used for the public access tier"
-  value       = module.network_firewall.public
+  value       = module.network_firewall.iap
 }
 
 output "public_restricted" {

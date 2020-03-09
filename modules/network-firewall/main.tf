@@ -11,27 +11,31 @@ data "google_compute_subnetwork" "private_subnetwork" {
   self_link = var.private_subnetwork
 }
 
+data "google_netblock_ip_ranges" "iap_netblocks" {
+  range_type = "iap-forwarders"
+}
+
 // Define tags as locals so they can be interpolated off of + exported
 locals {
-  public              = "public"
+  iap                 = "iap"
   public_restricted   = "public-restricted"
   private             = "private"
   private_persistence = "private-persistence"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# public - allow ingress from anywhere
+# public - allow ingress from IAP ranges
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "google_compute_firewall" "public_allow_all_inbound" {
-  name = "${var.name_prefix}-public-allow-ingress"
+resource "google_compute_firewall" "iap_allow_inbound" {
+  name = "${var.name_prefix}-aip-allow-ingress"
 
   project = var.project
   network = var.network
 
-  target_tags   = [local.public]
+  target_tags   = [local.iap]
   direction     = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = data.google_netblock_ip_ranges.iap_netblocks.cidr_blocks
 
   priority = "1000"
 
@@ -43,7 +47,6 @@ resource "google_compute_firewall" "public_allow_all_inbound" {
 # ---------------------------------------------------------------------------------------------------------------------
 # public - allow ingress from specific sources
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "google_compute_firewall" "public_restricted_allow_inbound" {
 
   count = length(var.allowed_public_restricted_subnetworks) > 0 ? 1 : 0
@@ -63,7 +66,6 @@ resource "google_compute_firewall" "public_restricted_allow_inbound" {
     protocol = "all"
   }
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # private - allow ingress from within this network

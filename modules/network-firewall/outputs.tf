@@ -1,6 +1,6 @@
-output "public" {
-  description = "The string of the public tag"
-  value       = local.public
+output "iap" {
+  description = "The string of the iap tag"
+  value       = local.iap
 }
 
 output "public_restricted" {
