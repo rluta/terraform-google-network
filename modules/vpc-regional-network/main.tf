@@ -58,7 +58,7 @@ resource "google_compute_router_nat" "vpc_nat" {
 
   project = var.project
   region  = var.region
-  router  = local.network
+  router  = google_compute_router.vpc_router.name
 
   nat_ip_allocate_option = "AUTO_ONLY"
 
