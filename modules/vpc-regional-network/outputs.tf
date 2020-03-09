@@ -67,7 +67,7 @@ output "private_subnetwork_secondary_range_name" {
 # Access Tier - Network Tags
 # ---------------------------------------------------------------------------------------------------------------------
 
-output "public" {
+output "iap" {
   description = "The network tag string used for the public access tier"
   value       = module.network_firewall.iap
 }
