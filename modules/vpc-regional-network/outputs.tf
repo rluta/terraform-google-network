@@ -67,6 +67,11 @@ output "private_subnetwork_secondary_range_name" {
 # Access Tier - Network Tags
 # ---------------------------------------------------------------------------------------------------------------------
 
+output "public" {
+  description = "Deprecated, backward compatibility output, don't use"
+  value       = module.network_firewall.iap
+}
+
 output "iap" {
   description = "The network tag string used for the public access tier"
   value       = module.network_firewall.iap
